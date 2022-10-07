@@ -79,7 +79,7 @@ struct ContentView: View {
             .padding(.vertical, 200)
         }
         .background(.black).edgesIgnoringSafeArea(.all)
-        .preferredColorScheme(.dark) // делаем белыми буквами текст
+        .preferredColorScheme(.dark) // делаем белыми буквами текст на черном фоне
     }
 }
 
@@ -89,7 +89,7 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
-struct CShape: Shape {  // создание собственной формы
+struct CShape: Shape {  // создание собственной формы логин
     func path(in rect: CGRect) -> Path {
         return Path { path in
             path.move(to: CGPoint(x: rect.width, y:100))
@@ -100,7 +100,7 @@ struct CShape: Shape {  // создание собственной формы
     }
 }
 
-struct CShape1: Shape {  // создание собственной формы
+struct CShape1: Shape {  // создание собственной формы рег
     func path(in rect: CGRect) -> Path {
         return Path { path in
             path.move(to: CGPoint(x: 0, y:100))
@@ -125,44 +125,73 @@ struct Login: View {
                             .foregroundColor(self.index == 0 ? .white : .black)
                             .font(.title)
                             .fontWeight(.bold)
+                            // test
                         
                         Capsule()
-                            .fill(self.index == 0 ? .blue : .clear) // clear - пусто
+                            .fill(self.index == 0 ? .blue : .clear) // clear --fdf пусто
                             .frame(width: 100, height: 5)
                     }
                     
                     Spacer()
-                }.padding(.top, 30)
+                }
+                .padding(.top, 30)
                 
                 VStack {
                     HStack(spacing: 15) {
+                        Button(action: {
+                            //
+                        }) {
                         Image(systemName: "envelope.fill")
                             .foregroundColor(.black)
-                        TextField("Email Adress", text: self.$email)
+                            .opacity(0.5)
+                        }
+                        ZStack(alignment: .leading) {
+                        if email.isEmpty {
+                            Text("Email Adress")
+                                .foregroundColor(.black)
+                                .opacity(0.8)
+                        }
+                        
+                        TextField("", text: self.$email)
+                        }
                             
                             
 
                     }
                     Divider()
                         .background(.white.opacity(0.5))
-                } .padding(.horizontal)
-                    .padding(.top, 40)
+                }
+                .padding(.horizontal)
+                .padding(.top, 40)
                 
         
                 
                 VStack {
                     HStack(spacing: 15) {
+                        Button(action: {
+                            //
+                        }) {
                         Image(systemName: "eye.slash.fill")
                             .foregroundColor(.black)
-                        SecureField("Password", text: self.$pass)
-                            .foregroundColor(/*@START_MENU_TOKEN@*/.black/*@END_MENU_TOKEN@*/)
+                            .opacity(0.5)
+                        }
+                        ZStack(alignment: .leading) {
+                        if pass.isEmpty {
+                            Text("Password")
+                                .foregroundColor(.black)
+                                .opacity(0.8)
+                        }
+                        SecureField("", text: self.$pass)
+                        }
+                            
                             
                            
                     }
                     Divider()
                         .background(.white.opacity(0.5))
-                } .padding(.horizontal)
-                    .padding(.top, 30)
+                }
+                .padding(.horizontal)
+                .padding(.top, 30)
                 
                 HStack {
                     Spacer (minLength: 0)
@@ -172,8 +201,9 @@ struct Login: View {
                         Text("Forget password?")
                             .foregroundColor(.black.opacity(0.9))
                     }
-                } .padding(.horizontal)
-                    .padding(.top, 30)
+                }
+                .padding(.horizontal)
+                .padding(.top, 40)
                 
             } .padding()
                 .padding(.bottom, 65)
@@ -233,9 +263,21 @@ struct SignUp2: View {
                 
                 VStack {
                     HStack(spacing: 15) {
+                        Button(action: {
+                            //
+                        }) {
                         Image(systemName: "envelope.fill")
                             .foregroundColor(.black)
-                        TextField("Email Adress", text: self.$email)
+                            .opacity(0.5)
+                        }
+                        ZStack(alignment: .leading) {
+                        if email.isEmpty {
+                            Text("Email Adress")
+                                .foregroundColor(.black)
+                                .opacity(0.8)
+                        }
+                        TextField("", text: self.$email)
+                        }
                     }
                     Divider().background(.white.opacity(0.5))
                 }
@@ -243,9 +285,21 @@ struct SignUp2: View {
                 .padding(.top, 40)
                 VStack {
                     HStack(spacing: 15) {
+                        Button(action: {
+                            
+                        }) {
                         Image(systemName: "eye.slash.fill")
                             .foregroundColor(.black)
-                        SecureField("password", text: self.$pass)
+                            .opacity(0.5)
+                        }
+                        ZStack(alignment: .leading) {
+                        if pass.isEmpty {
+                            Text("Password")
+                                .foregroundColor(.black)
+                                .opacity(0.8)
+                        }
+                        SecureField("", text: self.$pass)
+                        }
                     }
                     Divider()
                         .background(.white.opacity(0.5))
@@ -255,14 +309,26 @@ struct SignUp2: View {
                 
                 VStack {
                     HStack(spacing: 15) {
+                        Button(action: {
+                            //
+                        }) {
                         Image(systemName: "eye.slash.fill")
                             .foregroundColor(.black)
-                        SecureField("password", text: self.$pepass)
+                            .opacity(0.5)
+                        }
+                        ZStack(alignment: .leading) {
+                        if pass.isEmpty {
+                            Text("Password")
+                                .foregroundColor(.black)
+                                .opacity(0.8)
+                        }
+                        SecureField("", text: self.$pepass)
+                        }
                     }
                     Divider().background(.black.opacity(0.5))
                 }
                 .padding(.horizontal)
-                .padding(.top, 40)
+                .padding(.top, 30)
             }
             .padding()
             .padding(.bottom, 65)
@@ -288,7 +354,7 @@ struct SignUp2: View {
                     .contentShape(Capsule())
                     .shadow(color: .white.opacity(0.8), radius: 5, x: 0, y: -5)
             }
-            .offset(y: 25)
+            .offset(y: 35)
             .opacity(self.index == 1 ? 1 : 0)
         }
     }
