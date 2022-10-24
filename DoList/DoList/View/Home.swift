@@ -12,8 +12,8 @@ struct ExpenseItem: Identifiable, Codable {
     let name: String
     let type: String
     let amount: Int
-    
 }
+
 
 class Expenses: ObservableObject {
     @Published var items = [ExpenseItem]() {
@@ -36,8 +36,12 @@ class Expenses: ObservableObject {
     }
 }
 
+
 struct Home: View {
+    @State private var rectColor = false
+    @State private var array = [false, false, false, false, false, false,]
     @StateObject var taskModel: TaskViewModel = TaskViewModel()
+    
     
     private let calendar: Calendar
     private let monthDayFormatter: DateFormatter
@@ -62,147 +66,157 @@ struct Home: View {
     var body: some View {
         NavigationView {
             ZStack {
-                    ScrollView() {
-                        HStack {
-                            VStack(alignment: .center, spacing: 10) {
-                                Text(Date().formatted(date: .abbreviated, time: .omitted))
-                                    .foregroundColor(.gray)
-                                //                        Text("Today")
-                                //                            .font(.title.bold())
+                ScrollView() {
+                    HStack {
+                        VStack(alignment: .center, spacing: 10) {
+                            Text(Date().formatted(date: .abbreviated, time: .omitted))
+                                .foregroundColor(.gray)
+                            //                        Text("Today")
+                            //                            .font(.title.bold())
+                        }
+                        Spacer()
+                        Button(action: {
+                            self.showingAddExpense = true
+                        }) {
+                            Image(systemName: "plus")
+                        }
+                        .offset(x: -10)
+                        .sheet(isPresented: $showingAddExpense) {
+                            AddView(expenses: self.expenses)
+                        }
+                    }
+                    .padding(.leading)
+                    
+                    CalendarWeekListView(
+                        calendar: calendar,
+                        date: $selectedDate,
+                        content: { date in
+                            Button(action: {
+                                selectedDate = date
+                                
+                                withAnimation {
+                                    taskModel.currentDay = date
+                                }
+                            }) {
+                                VStack(spacing: 10) {
+                                    Text(dayFormatter.string(from: date))
+                                        .font(.system(size: 15))
+                                        .fontWeight(.semibold)
+                                    
+                                    Text(weekDayFormatter.string(from: date))
+                                        .font(.system(size: 14))
+                                    
+                                    Circle()
+                                        .fill(.white)
+                                        .frame(width: 8, height: 8)
+                                        .opacity(calendar.isDate(date, inSameDayAs: selectedDate) ? 1 : 0)
+                                    
+                                }
+                                .foregroundStyle(calendar.isDate(date, inSameDayAs: selectedDate) ? .primary : .secondary)
+                                .foregroundColor(calendar.isDate(date, inSameDayAs: selectedDate) ? .white : .black)
+                                .frame(width: 45, height: 90)
+                                .background(
+                                    ZStack {
+                                        if calendar.isDate(date, inSameDayAs: selectedDate) {
+                                            Capsule()
+                                                .fill(Color.blue)
+                                        }
+                                    }
+                                )
+                            }
+                        },
+                        title: { date in
+                            HStack {
+                                Text(monthDayFormatter.string(from: selectedDate))
+                                    .font(.headline)
+                                    .padding(5)
+                                Spacer()
+                            }
+                            .padding([.bottom, .leading], 10)
+                        }, weekSwitcher: { date in
+                            Button {
+                                withAnimation(.easeIn) {
+                                    guard let newDate = calendar.date(
+                                        byAdding: .weekOfMonth,
+                                        value: -1,
+                                        to: selectedDate
+                                    ) else {
+                                        return
+                                    }
+                                    
+                                    selectedDate = newDate
+                                }
+                            } label: {
+                                Label(
+                                    title: { Text("Previous") },
+                                    icon: { Image(systemName: "chevron.left") }
+                                )
+                                .labelStyle(IconOnlyLabelStyle())
+                                .padding(.horizontal)
+                            }
+                            .offset(x: -10)
+                            Button {
+                                withAnimation(.easeIn) {
+                                    guard let newDate = calendar.date(
+                                        byAdding: .weekOfMonth,
+                                        value: 1,
+                                        to: selectedDate
+                                    ) else {
+                                        return
+                                    }
+                                    
+                                    selectedDate = newDate
+                                }
+                            } label: {
+                                Label(
+                                    title: { Text("Next") },
+                                    icon: { Image(systemName: "chevron.right") }
+                                )
+                                .labelStyle(IconOnlyLabelStyle())
+                                //                                .padding(.horizontal)
+                            }
+                            .offset(x: -10)
+                        }
+                    )
+                }
+                
+                List {
+                    ForEach(expenses.items) { item in
+                        HStack{
+                            VStack(alignment: .leading){
+                                Text(item.name)
+                                    .font(.headline)
+                                    .offset(x: 10)
+                                HStack {
+                                    ForEach(0 ..< array.count) { button in
+                                        Button(action: {
+                                            changeColor(button)  }) {
+                                                Rectangle()
+                                                    .frame(width: 30, height: 40)
+                                                        .foregroundColor(array[button] == true ? .green : .white)
+                                                    .border(.black)
+                                                    .padding(7.4)
+                                                    .offset(x: 3)
+                                            }
+                                    }
+                                }
+                                
                             }
                             Spacer()
-                            Button(action: {
-        self.showingAddExpense = true
-    }) {
-        Image(systemName: "plus")
-    }
-    .offset(x: -10)
-    .sheet(isPresented: $showingAddExpense) {
-        AddView(expenses: self.expenses)
-    }
                         }
-                        .padding(.leading)
-                        
-                        CalendarWeekListView(
-                            calendar: calendar,
-                            date: $selectedDate,
-                            content: { date in
-                                Button(action: {
-                                    selectedDate = date
-                                    
-                                    withAnimation {
-                                        taskModel.currentDay = date
-                                    }
-                                }) {
-                                    VStack(spacing: 10) {
-                                        Text(dayFormatter.string(from: date))
-                                            .font(.system(size: 15))
-                                            .fontWeight(.semibold)
-                                        
-                                        Text(weekDayFormatter.string(from: date))
-                                            .font(.system(size: 14))
-                                        
-                                        Circle()
-                                            .fill(.white)
-                                            .frame(width: 8, height: 8)
-                                            .opacity(calendar.isDate(date, inSameDayAs: selectedDate) ? 1 : 0)
-                                        
-                                    }
-                                    .foregroundStyle(calendar.isDate(date, inSameDayAs: selectedDate) ? .primary : .secondary)
-                                    .foregroundColor(calendar.isDate(date, inSameDayAs: selectedDate) ? .white : .black)
-                                    .frame(width: 45, height: 90)
-                                    .background(
-                                        ZStack {
-                                            if calendar.isDate(date, inSameDayAs: selectedDate) {
-                                                Capsule()
-                                                    .fill(Color.blue)
-                                            }
-                                        }
-                                    )
-                                }
-                            },
-                            title: { date in
-                                HStack {
-                                    Text(monthDayFormatter.string(from: selectedDate))
-                                        .font(.headline)
-                                        .padding(5)
-                                    Spacer()
-                                }
-                                .padding([.bottom, .leading], 10)
-                            }, weekSwitcher: { date in
-                                Button {
-                                    withAnimation(.easeIn) {
-                                        guard let newDate = calendar.date(
-                                            byAdding: .weekOfMonth,
-                                            value: -1,
-                                            to: selectedDate
-                                        ) else {
-                                            return
-                                        }
-                                        
-                                        selectedDate = newDate
-                                    }
-                                } label: {
-                                    Label(
-                                        title: { Text("Previous") },
-                                        icon: { Image(systemName: "chevron.left") }
-                                    )
-                                    .labelStyle(IconOnlyLabelStyle())
-                                    .padding(.horizontal)
-                                }
-                                .offset(x: -10)
-                                Button {
-                                    withAnimation(.easeIn) {
-                                        guard let newDate = calendar.date(
-                                            byAdding: .weekOfMonth,
-                                            value: 1,
-                                            to: selectedDate
-                                        ) else {
-                                            return
-                                        }
-                                        
-                                        selectedDate = newDate
-                                    }
-                                } label: {
-                                    Label(
-                                        title: { Text("Next") },
-                                        icon: { Image(systemName: "chevron.right") }
-                                    )
-                                    .labelStyle(IconOnlyLabelStyle())
-                                    //                                .padding(.horizontal)
-                                }
-                                .offset(x: -10)
-                            }
-                        )
                     }
-                
-                    List {
-                        ForEach(expenses.items) { item in
-                            HStack{
-                                VStack(alignment: .leading){
-                                    Text(item.name)
-                                        .font(.headline)
-                                    Text(item.type)
-                                }
-                                Spacer()
-                                Text("$\(item.amount)")
-                            }
-                        }
-                        .onDelete(perform: removeItems)
-                    }
-                    .offset(y: 168)
-                    
-                    //                .navigationBarTitle("Мои расходы")
-//                    .navigationBarItems(trailing:
-                         
-                                    
+                    .onDelete(perform: removeItems)
+                }
+                .offset(y: 168)
             }
         }
     }
-                func removeItems(as offsets: IndexSet) {
-                    expenses.items.remove(atOffsets: offsets)
-                }
-
+    func removeItems(as offsets: IndexSet) {
+        expenses.items.remove(atOffsets: offsets)
+    }
+    func changeColor(_ button: Int) {
+      array[button] = !array[button]
+    }
 }
 
 
