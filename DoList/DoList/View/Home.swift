@@ -215,7 +215,7 @@ struct Home: View {
         expenses.items.remove(atOffsets: offsets)
     }
     func changeColor(_ button: Int) {
-      array[button] = !array[button]
+      array[button] = !array[button] //
     }
 }
 
