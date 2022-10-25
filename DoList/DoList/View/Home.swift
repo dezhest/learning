@@ -39,7 +39,8 @@ class Expenses: ObservableObject {
 
 struct Home: View {
     @State private var rectColor = false
-    @State private var array = [false, false, false, false, false, false,]
+    @State private var array = [false, false, false, false, false, false, false]
+    @State private var array2 = [false, false, false, false, false, false, false]
     @StateObject var taskModel: TaskViewModel = TaskViewModel()
     
     
@@ -189,15 +190,27 @@ struct Home: View {
                                     .offset(x: 10)
                                 HStack {
                                     ForEach(0 ..< array.count) { button in
-                                        Button(action: {
-                                            changeColor(button)  }) {
-                                                Rectangle()
-                                                    .frame(width: 30, height: 40)
-                                                        .foregroundColor(array[button] == true ? .green : .white)
-                                                    .border(.black)
-                                                    .padding(7.4)
-                                                    .offset(x: 3)
+                                        Rectangle()
+                                            .frame(width: 30, height: 55)
+                                            .foregroundColor(array2[button] == true ? .red : .gray)
+                                            .opacity(array2[button] == true ? 1 : 0.9)
+                                            .foregroundColor(array[button] == true ? .green : .white)
+                                            .border(array[button] == true ? .green : .white, width: array[button] == true ? 20 : 0)
+                                            .cornerRadius(30)
+                                            .shadow(color: array[button] == true ? .gray : .white, radius: 5, x: 2, y: -2)
+                                            .opacity(0.9)
+                                            .padding(7.4)
+                                            .offset(x: 3)
+                                            .onTapGesture(){
+                                                changeColor1(button)
+
                                             }
+                                            .onLongPressGesture(minimumDuration: 0.7) {
+                                                changeColor1(button)
+                                                changeColor2(button)
+                                                           }
+                                                   
+                                                
                                     }
                                 }
                                 
@@ -214,8 +227,13 @@ struct Home: View {
     func removeItems(as offsets: IndexSet) {
         expenses.items.remove(atOffsets: offsets)
     }
-    func changeColor(_ button: Int) {
-      array[button] = !array[button] //
+    func changeColor1(_ button: Int) {
+        array[button] = !array[button]
+        array2[button] = false
+    }
+    func changeColor2(_ button: Int) {
+        array[button] = false
+        array2[button] = !array2[button]
     }
 }
 
