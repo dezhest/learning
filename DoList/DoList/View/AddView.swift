@@ -29,7 +29,7 @@ struct AddView: View {
         .navigationBarTitle("Добавить")
         .navigationBarItems(trailing: Button("Сохранить"){
           
-                let item = ExpenseItem(name: self.name)
+                var item = ExpenseItem(name: self.name, array: [false, false, false, false, false, false, false], array2: [false, false, false, false, false, false, false] )
                 self.expenses.items.append(item)
                 self.presentationMode.wrappedValue.dismiss()
            

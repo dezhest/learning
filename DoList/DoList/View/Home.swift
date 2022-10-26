@@ -10,6 +10,8 @@ import SwiftUI
 struct ExpenseItem: Identifiable, Codable {
     let id = UUID()
     let name: String
+    var array: [Bool]
+    var array2: [Bool]
 }
 
 
@@ -33,15 +35,7 @@ class Expenses: ObservableObject {
         
     }
 }
-class Arrays: ObservableObject {
-    @Published private var arrayOfArray: [[Bool]] = []
-    var array3 = [false, false, false, false, false, false, false]
-    var array4 = [false, false, false, false, false, false, false]
-    init(array3: [Bool], array4: [Bool]) {
-        self.array3 = array3
-        self.array4 = array4
-    }
-}
+
 
 struct Home: View {
     
@@ -208,12 +202,12 @@ struct Home: View {
                                             .padding(7.4)
                                             .offset(x: 3)
                                             .onTapGesture(){
-                                                changeColor1(button)
+                                                item.array[button].toggle()
 
                                             }
                                             .onLongPressGesture(minimumDuration: 0.7) {
-                                                changeColor1(button)
-                                                changeColor2(button)
+                                                item.array[button].toggle()
+                                                item.array2[button].toggle()
                                                            }        
                                     }
                                 }
