@@ -11,9 +11,7 @@ struct AddView: View {
     @Environment(\.presentationMode) var presentationMode // для закрытия шита
     @ObservedObject var expenses : Expenses
     @State private var name = ""
-    @State private var type = "Personal"
-    @State private var amount = ""
-    
+    @State private var type = "Color"
     let types = ["Красный", "Зеленый"]
     
     
@@ -26,16 +24,16 @@ struct AddView: View {
                         Text($0)
                     }
                 }
-            TextField("Стоимость", text: $amount)
-                .keyboardType(.numberPad)  // клавиатура только с цифрами
+           
         }
         .navigationBarTitle("Добавить")
         .navigationBarItems(trailing: Button("Сохранить"){
-            if let actualAmount = Int(self.amount) { // проверяем нет ли символов
-                let item = ExpenseItem(name: self.name, type: self.type, amount: actualAmount)
+          
+                let item = ExpenseItem(name: self.name)
                 self.expenses.items.append(item)
                 self.presentationMode.wrappedValue.dismiss()
-                }
+           
+                
         })
     }
 }
