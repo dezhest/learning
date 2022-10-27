@@ -12,6 +12,8 @@ struct AddView: View {
     @ObservedObject var expenses : Expenses
     @State private var name = ""
     @State private var type = "Color"
+    @State private var array = [false, false, false, false, false, false, false]
+    @State private var array2 = [false, false, false, false, false, false, false]
     let types = ["Красный", "Зеленый"]
     
     
@@ -29,7 +31,7 @@ struct AddView: View {
         .navigationBarTitle("Добавить")
         .navigationBarItems(trailing: Button("Сохранить"){
           
-                var item = ExpenseItem(name: self.name, array: [false, false, false, false, false, false, false], array2: [false, false, false, false, false, false, false] )
+            let item = ExpenseItem(name: self.name, array: self.array, array2: self.array2 ) // можно сюда записать массивы из Бул вместо селф эррэй
                 self.expenses.items.append(item)
                 self.presentationMode.wrappedValue.dismiss()
            

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ExpenseItem: Identifiable, Codable {
-    let id = UUID()
+    var id = UUID()
     let name: String
     var array: [Bool]
     var array2: [Bool]
@@ -16,7 +16,9 @@ struct ExpenseItem: Identifiable, Codable {
 
 
 class Expenses: ObservableObject {
-    @Published var items = [ExpenseItem]() {
+    @Published var items = [ExpenseItem]()
+
+    {
         didSet {
             let encoder = JSONEncoder()
             if let encoded = try? encoder.encode(items) {
@@ -32,7 +34,7 @@ class Expenses: ObservableObject {
                 return
             }
         }
-        
+        @State var count = items.count
     }
 }
 
@@ -180,35 +182,35 @@ struct Home: View {
                         }
                     )
                 }
-                
+               
                 List {
-                    ForEach(expenses.items) { item in
+                    ForEach(0 ..< expenses.items.count, id: \.self) { i in
                         HStack{
                             VStack(alignment: .leading){
-                                Text(item.name)
+                                Text(expenses.items[i].name)
                                     .font(.headline)
                                     .offset(x: 10)
                                 HStack {
-                                    ForEach(0 ..< array.count) { button in
+                                    ForEach(0 ..< array.count, id: \.self) { button in
                                         Rectangle()
                                             .frame(width: 30, height: 55)
-                                            .foregroundColor(array2[button] == true ? .red : .gray)
-                                            .opacity(array2[button] == true ? 1 : 0.9)
-                                            .foregroundColor(array[button] == true ? .green : .white)
-                                            .border(array[button] == true ? .green : .white, width: array[button] == true ? 20 : 0)
+                                            .foregroundColor(expenses.items[i].array2[button] == true ? .red : .gray)
+                                            .opacity(expenses.items[i].array2[button] == true ? 1 : 0.9)
+                                            .foregroundColor(expenses.items[i].array[button] == true ? .green : .white)
+                                            .border(expenses.items[i].array[button] == true ? .green : .white, width: expenses.items[i].array[button] == true ? 20 : 0)
                                             .cornerRadius(30)
-                                            .shadow(color: array[button] == true ? .gray : .white, radius: 5, x: 2, y: -2)
+                                            .shadow(color: expenses.items[i].array[button] == true ? .gray : .white, radius: 5, x: 2, y: -2)
                                             .opacity(0.9)
                                             .padding(7.4)
                                             .offset(x: 3)
                                             .onTapGesture(){
-                                                item.array[button].toggle()
+                                                changeColor1(button, i)
 
                                             }
                                             .onLongPressGesture(minimumDuration: 0.7) {
-                                                item.array[button].toggle()
-                                                item.array2[button].toggle()
-                                                           }        
+                                                changeColor1(button, i)
+                                                changeColor2(button, i)
+                                                           }
                                     }
                                 }
                                 
@@ -216,22 +218,32 @@ struct Home: View {
                             Spacer()
                         }
                     }
-                    .onDelete(perform: removeItems)
+                    .onDelete(perform: delete)
                 }
                 .offset(y: 168)
             }
         }
     }
-    func removeItems(as offsets: IndexSet) {
-        expenses.items.remove(atOffsets: offsets)
+    private func delete(with indexSet: IndexSet) {
+        indexSet.forEach { expenses.items.remove(at: $0) }
+        }
+    
+//    func removeItems(as offsets: IndexSet) {
+//        expenses.items.remove(atOffsets: offsets)
+//    } // можно и так удалять
+    
+    func test() -> Int {
+       return expenses.items.count
     }
-    func changeColor1(_ button: Int) {
-        array[button] = !array[button]
-        array2[button] = false
+    
+    func changeColor1(_ button: Int, _ i: Int) {
+        expenses.items[i].array[button] = !expenses.items[i].array[button]
+        expenses.items[i].array2[button] = false
     }
-    func changeColor2(_ button: Int) {
-        array[button] = false
-        array2[button] = !array2[button]
+    
+    func changeColor2(_ button: Int, _ i: Int) {
+        expenses.items[i].array[button] = false
+        expenses.items[i].array2[button] = !expenses.items[i].array2[button]
     }
 }
 
