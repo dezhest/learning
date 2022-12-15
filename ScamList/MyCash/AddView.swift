@@ -62,8 +62,8 @@ struct AddView: View {
                 }
                 .navigationBarTitle("Добавить скам")
                 .navigationBarItems(trailing: Button("Сохранить"){
-                    let item = ExpenseItem(name: self.name, type: self.type, amount: self.amount, selectedDate: self.selectedDate)
-//                    self.expenses.items.insert(item, at: 0)
+                    let item = ExpenseItem(name: self.name, type: self.type, amount: self.amount, selectedDate: self.selectedDate, selectedImage: self.selectedImage ?? UIImage())
+                    self.expenses.items.insert(item, at: 0)
                     self.presentationMode.wrappedValue.dismiss()
                 })
             }

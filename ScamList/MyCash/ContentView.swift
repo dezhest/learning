@@ -13,6 +13,7 @@ struct ExpenseItem: Identifiable, Hashable {
     let type: String
     let amount: Double
     let selectedDate: Date
+    let selectedImage: UIImage
     
 }
 
@@ -46,13 +47,23 @@ struct ContentView: View {
         NavigationView {
             List {
                 ForEach(sortByAll) { item in
-                    NavigationLink(destination: Text("Link")) {
+                    
+                        NavigationLink(destination: Image(uiImage: item.selectedImage)
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                        ) {
                         HStack{
                             VStack(alignment: .leading){
                                 Text(item.name)
                                     .font(.headline)
                                 Text(item.type)
+                            
                             }
+                            Image(uiImage: item.selectedImage)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .clipShape(Circle())
+                                .frame(width: 50, height: 50)
                             Spacer()
                             Text("\(item.selectedDate, formatter: dateFormatter)")
                                 .padding(.horizontal)
